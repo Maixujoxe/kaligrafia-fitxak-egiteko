@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Idazketa Fitxa Sortzailea - www.maixujoxe.eus</title>
+  
+  <!-- Google Fonts - Playwrite ES -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playwrite+ES:wght@100..400&display=swap" rel="stylesheet">
+
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f3f4f6;
+      color: #1f2937;
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header.no-print {
+      background-color: #1e40af;
+      color: white;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header.no-print h1 {
+      margin: 0 0 0.25rem 0;
+      font-size: 1.5rem;
+    }
+    header.no-print p {
+      margin: 0;
+      opacity: 0.9;
+      font-size: 0.9rem;
+    }
+
+    .main-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding: 1rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .main-layout {
+        flex-direction: row;
+        padding: 2rem;
+      }
+    }
+
+    .controls-panel {
+      width: 100%;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      height: fit-content;
+    }
+
+    @media (min-width: 768px) {
+      .controls-panel {
+        width: 320px;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .form-group label {
+      font-weight: bold;
+      font-size: 0.875rem;
+      color: #374151;
+    }
+    textarea {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      resize: vertical;
+      min-height: 160px;
+    }
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .radio-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .btn-print {
+      background-color: #059669;
+      color: white;
+      border: none;
+      padding: 0.8rem;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background-color 0.2s;
+    }
+    .btn-print:hover {
+      background-color: #047857;
+    }
+
+    .preview-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    /* A4 ORRIALDEA - Gehienez 14 lerro orri bakoitzeko */
+    .a4-page {
+      width: 210mm;
+      min-height: 297mm;
+      height: 297mm;
+      background: white;
+      padding: 15mm 15mm;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      box-sizing: border-box;
+      page-break-after: always;
+      flex-shrink: 0;
+    }
+
+    /* GOIBURUA: Izena eta Data puntudun eremuekin */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 20px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      font-weight: bold;
+      gap: 20px;
+    }
+    .header-field {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .name-field {
+      width: 65%;
+    }
+    .date-field {
+      width: 30%;
+    }
+    .dots-fill {
+      flex: 1;
+      border-bottom: 2px dotted #4b5563;
+      height: 16px;
+    }
+
+    /* LERROEN EREMUA (14 lerro) */
+    .lines-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .line-row {
+      height: 13.5mm; 
+      width: 100%;
+      position: relative;
+      overflow: visible;
+      display: flex;
+      align-items: center;
+    }
+
+    .text-content {
+      position: absolute;
+      width: 100%;
+      z-index: 2;
+      color: #000;
+      padding-left: 2px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+    }
+
+    /* PLAYWRITE ES (Hizkilotua) - 27px eta beste 2mm gorago kokatua (-3.9mm) */
+    .playwrite-es-uniquifier {
+      font-family: "Playwrite ES", cursive;
+      font-optical-sizing: auto;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 27px;
+      line-height: 6.6mm;
+      height: 6.6mm;
+      transform: translateY(-3.9mm);
+    }
+
+    /* INPRENTA (Arial) - 27px */
+    .font-inprenta {
+      font-family: Arial, sans-serif;
+      font-size: 27px;
+    }
+
+    /* MONTESSORI PAUTA (Bi lerrokoa / 25px lerroartea ~ 6.6mm) */
+    .pauta-montessori {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .pauta-montessori .band {
+      height: 6.6mm;
+      border-top: 1.2px solid #000;
+      border-bottom: 1.2px solid #000;
+      background-color: #f9fafb;
+    }
+
+    /* LERRO BAKARRA */
+    .pauta-lerro-bakarra {
+      position: absolute;
+      bottom: 2mm;
+      left: 0; right: 0;
+      border-bottom: 1.2px solid #000;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ORRI OINA */
+    .page-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-family: Arial, sans-serif;
+      color: #4b5563;
+      border-top: 1px solid #ccc;
+      padding-top: 5px;
+      margin-top: 5px;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .main-layout {
+        padding: 0; margin: 0;
+        display: block;
+      }
+      .preview-area {
+        display: block;
+      }
+      .a4-page {
+        box-shadow: none;
+        margin: 0;
+        width: 210mm;
+        height: 297mm;
+        page-break-after: always;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <header class="no-print">
+    <h1>Idazketa Fitxa Sortzailea</h1>
+    <p>Irakasleentzako tresna - www.maixujoxe.eus</p>
+  </header>
+
+  <div class="main-layout">
+    <div class="controls-panel no-print">
+      <div class="form-group">
+        <label for="textInput">Kopiatzeko testua (hutsik uzten baduzu, 14 lerro huts agertuko dira):</label>
+        <textarea id="textInput" placeholder="Idatzi hemen kopiatzeko esaldiak..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Letra mota:</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="fontType" value="hizkilotua" checked onchange="updatePages()"> Hizkilotua (Playwrite ES)
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="fontType" value="inprenta" onchange="updatePages()"> Inprenta (Arial)
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Pauta mota:</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="pautaType" value="montessori" checked onchange="updatePages()"> Montessori Pauta (Bi lerrokoa)
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="pautaType" value="lerro-bakarra" onchange="updatePages()"> Lerro Bakarra
+          </label>
+        </div>
+      </div>
+
+      <button class="btn-print" onclick="window.print()">
+        🖨️ Inprimatu Fitxa (A4 PDF)
+      </button>
+    </div>
+
+    <div class="preview-area" id="previewArea"></div>
+  </div>
+</div>
+
+<script>
+  const LINES_PER_PAGE = 14;
+  const MAX_WORDS_PER_LINE = 5;
+
+  function splitTextIntoFitLines(rawText) {
+    if (!rawText.trim()) return [""];
+    const lines = [];
+    const paragraphs = rawText.split('\n');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const maxWidthPixels = 500;
+
+    paragraphs.forEach(paragraph => {
+      if (paragraph.trim() === '') {
+        lines.push('');
+      } else {
+        const words = paragraph.split(' ');
+        let currentLine = '';
+        let wordCountInLine = 0;
+
+        words.forEach(word => {
+          const testLine = currentLine ? currentLine + ' ' + word : word;
+          ctx.font = "27px Arial"; 
+          const metrics = ctx.measureText(testLine);
+          
+          if ((metrics.width > maxWidthPixels || wordCountInLine >= MAX_WORDS_PER_LINE) && currentLine !== '') {
+            lines.push(currentLine);
+            currentLine = word;
+            wordCountInLine = 1;
+          } else {
+            currentLine = testLine;
+            wordCountInLine++;
+          }
+        });
+        if (currentLine !== '') {
+          lines.push(currentLine);
+        }
+      }
+    });
+
+    return lines;
+  }
+
+  function updatePages() {
+    const textElem = document.getElementById('textInput');
+    const text = textElem ? textElem.value : '';
+    const fontType = document.querySelector('input[name="fontType"]:checked').value;
+    const pautaType = document.querySelector('input[name="pautaType"]:checked').value;
+    
+    const previewArea = document.getElementById('previewArea');
+    if (!previewArea) return;
+    previewArea.innerHTML = '';
+
+    const formattedInputLines = splitTextIntoFitLines(text);
+    const finalLines = [];
+    
+    if (text.trim() === '') {
+      for (let i = 0; i < LINES_PER_PAGE; i++) {
+        finalLines.push("");
+      }
+    } else {
+      formattedInputLines.forEach(line => {
+        finalLines.push(line);
+        finalLines.push(""); 
+      });
+    }
+
+    const totalPages = Math.max(1, Math.ceil(finalLines.length / LINES_PER_PAGE));
+
+    for (let pageIdx = 0; pageIdx < totalPages; pageIdx++) {
+      const pageLines = finalLines.slice(pageIdx * LINES_PER_PAGE, (pageIdx + 1) * LINES_PER_PAGE);
+      
+      const pageElem = document.createElement('div');
+      pageElem.className = 'a4-page';
+
+      const headerElem = document.createElement('div');
+      headerElem.className = 'page-header';
+      headerElem.innerHTML = `
+        <div class="header-field name-field">
+          <span>Izena:</span>
+          <div class="dots-fill"></div>
+        </div>
+        <div class="header-field date-field">
+          <span>Data:</span>
+          <div class="dots-fill"></div>
+        </div>
+      `;
+      pageElem.appendChild(headerElem);
+
+      const linesContainer = document.createElement('div');
+      linesContainer.className = 'lines-container';
+
+      for (let i = 0; i < LINES_PER_PAGE; i++) {
+        const lineText = pageLines[i] !== undefined ? pageLines[i] : '';
+        const lineRow = document.createElement('div');
+        lineRow.className = 'line-row';
+
+        if (pautaType === 'montessori') {
+          const pauta = document.createElement('div');
+          pauta.className = 'pauta-montessori';
+          pauta.innerHTML = `<div class="band"></div>`;
+          lineRow.appendChild(pauta);
+        } else if (pautaType === 'lerro-bakarra') {
+          const pauta = document.createElement('div');
+          pauta.className = 'pauta-lerro-bakarra';
+          lineRow.appendChild(pauta);
+        }
+
+        const textDiv = document.createElement('div');
+        const fontClass = fontType === 'hizkilotua' ? 'playwrite-es-uniquifier' : 'font-inprenta';
+        
+        textDiv.className = `text-content ${fontClass}`;
+        textDiv.textContent = lineText;
+        
+        lineRow.appendChild(textDiv);
+        linesContainer.appendChild(lineRow);
+      }
+
+      pageElem.appendChild(linesContainer);
+
+      const footerElem = document.createElement('div');
+      footerElem.className = 'page-footer';
+      footerElem.innerHTML = `
+        <span>www.maixujoxe.eus</span>
+        <span>${pageIdx + 1} orria / ${totalPages}</span>
+      `;
+      pageElem.appendChild(footerElem);
+
+      previewArea.appendChild(pageElem);
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', updatePages);
+  document.getElementById('textInput').addEventListener('input', updatePages);
+  document.querySelectorAll('input[name="fontType"], input[name="pautaType"]').forEach(el => {
+    el.addEventListener('change', updatePages);
+  });
+</script>
+
+</body>
+</html>
