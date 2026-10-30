@@ -81,6 +81,7 @@
     @media (min-width: 768px) {
       .controls-panel {
         width: 320px;
+        flex-shrink: 0;
       }
     }
 
@@ -144,15 +145,16 @@
       gap: 2rem;
       overflow-x: auto;
       width: 100%;
+      min-height: 500px;
     }
 
-    /* A4 ORRIALDEA - Gehienez 14 lerro orri bakoitzeko */
+    /* A4 ORRIALDEA - Gehienez 16 lerro orri bakoitzeko */
     .a4-page {
       width: 210mm;
       min-height: 297mm;
       height: 297mm;
       background: white;
-      padding: 15mm 15mm;
+      padding: 12mm 15mm;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
@@ -163,13 +165,13 @@
       flex-shrink: 0;
     }
 
-    /* GOIBURUA: Izena eta Data puntudun eremuekin */
+    /* GOIBURUA: Izena eta Eguna */
     .page-header {
       display: flex;
       justify-content: space-between;
-      border-bottom: none;
-      padding-bottom: 0;
-      margin-bottom: 20px;
+      border-bottom: 1.5px solid #000;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
       font-family: Arial, sans-serif;
       font-size: 14px;
       font-weight: bold;
@@ -181,18 +183,18 @@
       gap: 8px;
     }
     .name-field {
-      width: 65%;
+      width: 60%;
     }
     .date-field {
-      width: 30%;
+      width: 35%;
     }
     .dots-fill {
       flex: 1;
-      border-bottom: 2px dotted #4b5563;
+      border-bottom: 1px dotted #000;
       height: 16px;
     }
 
-    /* LERROEN EREMUA (14 lerro) */
+    /* LERROEN EREMUA (16 lerro) */
     .lines-container {
       flex: 1;
       display: flex;
@@ -201,7 +203,7 @@
     }
 
     .line-row {
-      height: 13.5mm; 
+      height: 11.5mm; 
       width: 100%;
       position: relative;
       overflow: visible;
@@ -214,46 +216,56 @@
       width: 100%;
       z-index: 2;
       color: #000;
-      padding-left: 2px;
+      padding-left: 6px;
+      padding-right: 6px;
       top: 50%;
       transform: translateY(-50%);
       display: flex;
       align-items: center;
     }
 
-    /* PLAYWRITE ES (Hizkilotua) - 27px eta beste 2mm gorago kokatua (-3.9mm) */
+    /* PLAYWRITE ES (Hizkilotua) */
     .playwrite-es-uniquifier {
       font-family: "Playwrite ES", cursive;
       font-optical-sizing: auto;
       font-weight: 400;
       font-style: normal;
-      font-size: 27px;
-      line-height: 6.6mm;
-      height: 6.6mm;
-      transform: translateY(-3.9mm);
+      font-size: 22px;
+      line-height: 5.5mm;
+      height: 5.5mm;
+      transform: translateY(-3.2mm);
     }
 
-    /* INPRENTA (Arial) - 27px */
+    /* INPRENTA (Arial) */
     .font-inprenta {
       font-family: Arial, sans-serif;
-      font-size: 27px;
+      font-size: 22px;
     }
 
-    /* MONTESSORI PAUTA (Bi lerrokoa / 25px lerroartea ~ 6.6mm) */
-    .pauta-montessori {
+    /* PAUTA KARRATUA / ITXIA (Montessori erreferentziakoa: Kaxa itxia ezker/eskuin mugarekin) */
+    .pauta-montessori-karratua {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       z-index: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
       pointer-events: none;
-    }
-    .pauta-montessori .band {
-      height: 6.6mm;
+      border-left: 1.2px solid #000;
+      border-right: 1.2px solid #000;
       border-top: 1.2px solid #000;
       border-bottom: 1.2px solid #000;
-      background-color: #f9fafb;
+    }
+    .pauta-montessori-karratua .line-dotted-upper {
+      width: 100%;
+      border-bottom: 1px dashed #6b7280;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+    .pauta-montessori-karratua .line-dotted-lower {
+      width: 100%;
+      border-bottom: 1px dashed #6b7280;
+      margin-bottom: auto;
     }
 
     /* LERRO BAKARRA */
@@ -269,14 +281,14 @@
     /* ORRI OINA */
     .page-footer {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
       font-size: 11px;
       font-family: Arial, sans-serif;
-      color: #4b5563;
-      border-top: 1px solid #ccc;
-      padding-top: 5px;
-      margin-top: 5px;
+      color: #000;
+      border-top: 1.5px solid #000;
+      padding-top: 4px;
+      margin-top: 4px;
     }
 
     @media print {
@@ -315,7 +327,7 @@
   <div class="main-layout">
     <div class="controls-panel no-print">
       <div class="form-group">
-        <label for="textInput">Kopiatzeko testua (hutsik uzten baduzu, 14 lerro huts agertuko dira):</label>
+        <label for="textInput">Kopiatzeko testua (hutsik uzten baduzu, 16 lerro huts agertuko dira):</label>
         <textarea id="textInput" placeholder="Idatzi hemen kopiatzeko esaldiak..."></textarea>
       </div>
 
@@ -335,7 +347,7 @@
         <label>Pauta mota:</label>
         <div class="radio-group">
           <label class="radio-label">
-            <input type="radio" name="pautaType" value="montessori" checked onchange="updatePages()"> Montessori Pauta (Bi lerrokoa)
+            <input type="radio" name="pautaType" value="montessori" checked onchange="updatePages()"> Montessori pauta
           </label>
           <label class="radio-label">
             <input type="radio" name="pautaType" value="lerro-bakarra" onchange="updatePages()"> Lerro Bakarra
@@ -353,8 +365,8 @@
 </div>
 
 <script>
-  const LINES_PER_PAGE = 14;
-  const MAX_WORDS_PER_LINE = 5;
+  const LINES_PER_PAGE = 16;
+  const MAX_WORDS_PER_LINE = 6;
 
   function splitTextIntoFitLines(rawText) {
     if (!rawText.trim()) return [""];
@@ -362,7 +374,7 @@
     const paragraphs = rawText.split('\n');
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    const maxWidthPixels = 500;
+    const maxWidthPixels = 540;
 
     paragraphs.forEach(paragraph => {
       if (paragraph.trim() === '') {
@@ -374,7 +386,7 @@
 
         words.forEach(word => {
           const testLine = currentLine ? currentLine + ' ' + word : word;
-          ctx.font = "27px Arial"; 
+          ctx.font = "20px Arial"; 
           const metrics = ctx.measureText(testLine);
           
           if ((metrics.width > maxWidthPixels || wordCountInLine >= MAX_WORDS_PER_LINE) && currentLine !== '') {
@@ -435,7 +447,7 @@
           <div class="dots-fill"></div>
         </div>
         <div class="header-field date-field">
-          <span>Data:</span>
+          <span>Eguna:</span>
           <div class="dots-fill"></div>
         </div>
       `;
@@ -451,8 +463,11 @@
 
         if (pautaType === 'montessori') {
           const pauta = document.createElement('div');
-          pauta.className = 'pauta-montessori';
-          pauta.innerHTML = `<div class="band"></div>`;
+          pauta.className = 'pauta-montessori-karratua';
+          pauta.innerHTML = `
+            <div class="line-dotted-upper"></div>
+            <div class="line-dotted-lower"></div>
+          `;
           lineRow.appendChild(pauta);
         } else if (pautaType === 'lerro-bakarra') {
           const pauta = document.createElement('div');
@@ -474,9 +489,12 @@
 
       const footerElem = document.createElement('div');
       footerElem.className = 'page-footer';
+      footerElem.style.display = 'flex';
+      footerElem.style.justifyContent = 'space-between';
+      footerElem.style.alignItems = 'center';
       footerElem.innerHTML = `
         <span>www.maixujoxe.eus</span>
-        <span>${pageIdx + 1} orria / ${totalPages}</span>
+        <span>Orrialdea ${pageIdx + 1}/${totalPages}</span>
       `;
       pageElem.appendChild(footerElem);
 
@@ -484,7 +502,12 @@
     }
   }
 
-  window.addEventListener('DOMContentLoaded', updatePages);
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', updatePages);
+  } else {
+    updatePages();
+  }
+
   document.getElementById('textInput').addEventListener('input', updatePages);
   document.querySelectorAll('input[name="fontType"], input[name="pautaType"]').forEach(el => {
     el.addEventListener('change', updatePages);
